@@ -6,7 +6,8 @@
   "author": "brokentime906 <brokentime906@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/app"
+    "dev": "nodemon src/app",
+    "start": "node src/app"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
