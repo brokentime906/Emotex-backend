@@ -3,11 +3,9 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-  user_id: { required: true, type: String, unique: true },
-  password: { required: true, type: String },
-  nick_name: { required: true, type: String },
-  summoner_name: { required: false, type: String },
-  summoner_tier: { required: false, type: String },
+  google_id: { required: true, type: String, unique: true },
+  username: { required: true, type: String },
+  password: { required: false, type: String },
   createdAt: {
     type: Date,
     default: Date.now,
