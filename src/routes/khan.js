@@ -4,7 +4,7 @@ const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
 
-const khanUrl = "http://3.129.245.236";
+const khanUrl = "http://18.191.136.7";
 router.post("/test", async (req, res, next) => {
   const imageFile = await fs.readFileSync("./image.jpeg");
   console.log(imageFile);
