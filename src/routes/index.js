@@ -30,6 +30,11 @@ router.get(
     scope: ["profile"],
   })
 );
+router.get("/token", async (req, res, next) => {
+  const body__ = req.body;
+  console.log(body__);
+  res.json({ success: true });
+});
 router.use("/user", userRouter);
 router.use("/youtube", youtubeRouter);
 
