@@ -11,19 +11,32 @@ const path = require("path");
 // ALL_METHOD : base_url/user 로 들어오는 라우터 모두 userRouter에서 처리
 
 router.get("/", async (req, res, next) => {
-  if (req.user) {
-    res.send(req.user);
-  } else {
-    res.send(`<button><a href="/google">login</a> </button>`);
-  }
+  res.send(`<h1>click btn</h1>
+  <form action="/khan/sendImage" method="POST">
+   <button type='submit' >  sendImage </button>
+  </form>
+   `);
+});
+router.post("/", async (req, res, next) => {
+  console.log("start get token");
+  console.log(req.query);
+  console.log(req.body);
+  const { idtoken: accessToken } = req.body;
+
+  res.json({ success: "true" });
 });
 router.get(
   "/oauth2callback",
   passport.authenticate("google"),
   async (req, res, next) => {
+    console.log("starts auth");
+    console.log(req.query);
     res.send(req.user);
   }
 );
+router.post("/sendtoken", async (req, res, next) => {
+  res.json({ success: true });
+});
 router.get(
   "/google",
   passport.authenticate("google", {
@@ -37,5 +50,6 @@ router.get("/token", async (req, res, next) => {
 });
 router.use("/user", userRouter);
 router.use("/youtube", youtubeRouter);
-
+const khan = require("./khan");
+router.use("/khan", khan);
 module.exports = router;
