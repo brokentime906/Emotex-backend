@@ -27,6 +27,7 @@ router.post("/sendImage", async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
+    console.log(err);
     console.log("아 실패");
   }
   //from here data save , and send client ? holding
