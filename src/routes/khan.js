@@ -4,7 +4,7 @@ const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
 
-const khanUrl = "http://18.191.136.7";
+const khanUrl = "http://mylabcom.ddns.net";
 router.post("/test", async (req, res, next) => {
   const imageFile = await fs.readFileSync("./image.jpeg");
   console.log(imageFile);
@@ -29,9 +29,8 @@ router.post("/sendImage", async (req, res, next) => {
     console.log(err);
     console.log("아 실패");
   }
-  //from here data save , and send client ? holding
-  console.log(result);
   console.log(result.data);
+  //from here data save , and send client ? holding
   res.json({ success: true });
 });
 
