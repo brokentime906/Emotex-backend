@@ -1,18 +1,34 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
 const User = require("./schemas/User");
+//라이스
+// const config = {
+//   client_id:
+//     "1098545434211-jv5gos6v3vh1das6c4n7kiv48ooqjf6t.apps.googleusercontent.com",
+//   project_id: "emotechs-286606",
+//   auth_uri: "https://accounts.google.com/o/oauth2/auth",
+//   token_uri: "https://oauth2.googleapis.com/token",
+//   auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
+//   client_secret: "-Ocs92Dv8HyA69AXvarUVLX0",
+//   redirect_uris: ["http://af4943e5c2c4.ngrok.io/oauth2callback"],
+//   javascript_origins: ["http://af4943e5c2c4.ngrok.io"],
+// };
+
+//나
 const config = {
   client_id:
-    "1098545434211-jv5gos6v3vh1das6c4n7kiv48ooqjf6t.apps.googleusercontent.com",
-  project_id: "emotechs-286606",
+    "431524974496-3h8gsv7bpog102d9mn5hk08tck7duei4.apps.googleusercontent.com",
+  project_id: "emotex-284018",
   auth_uri: "https://accounts.google.com/o/oauth2/auth",
   token_uri: "https://oauth2.googleapis.com/token",
   auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  client_secret: "-Ocs92Dv8HyA69AXvarUVLX0",
-  redirect_uris: ["http://af4943e5c2c4.ngrok.io/oauth2callback"],
-  javascript_origins: ["http://af4943e5c2c4.ngrok.io"],
+  client_secret: "IA58XDMECgbmrGuW1zU8Six2",
+  redirect_uris: [
+    "http://localhost:4000/oauth2callback",
+    "http://af4943e5c2c4.ngrok.io/oauth2callback",
+  ],
+  javascript_origins: ["http://localhost:4000", "http://af4943e5c2c4.ngrok.io"],
 };
-
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
@@ -40,7 +56,7 @@ passport.use(
       try {
         const currentUser = await User.findOne({ google_id: id });
         if (currentUser) {
-          console.log("이미 유저있어");
+          console.log("이미 유저있어", accessToken);
           currentUser.accessToken = accessToken;
           currentUser.refreshToken = refreshToken;
 

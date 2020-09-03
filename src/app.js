@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
+const multer = require("multer");
 const passportSetup = require("./passport-setup");
 const keys = require("./keys");
 const app = express();
@@ -26,6 +27,7 @@ app.use(cors()); //
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(multer().single("file"));
 
 //routes 설정
 const routes = require("./routes");
@@ -36,5 +38,5 @@ const swaggerDoc = require("./swaggerDoc");
 swaggerDoc(app);
 
 //server starts
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`${PORT} port , start server`));

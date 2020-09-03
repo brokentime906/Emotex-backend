@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
-  google_id: { required: true, type: String, unique: true },
-  username: { required: true, type: String },
+  email: { required: true, type: String, unique: true },
+  username: { required: false, type: String },
   password: { required: false, type: String },
   createdAt: {
     type: Date,
