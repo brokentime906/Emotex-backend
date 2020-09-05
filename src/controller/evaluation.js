@@ -42,7 +42,10 @@ exports.createEvaluation = async (req, res, next) => {
 
   var base64Str = image;
   var path = "./";
-  var optionalObj = { fileName: "imageFileName" + idx.toString(), type: "jpg" };
+  var optionalObj = {
+    fileName: `imageFileName ${idx.toString()}`,
+    type: "jpg",
+  };
 
   await base64ToImage(base64Str, path, optionalObj);
   try {
