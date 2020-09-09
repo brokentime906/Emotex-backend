@@ -25,8 +25,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cors()); //
 app.use(morgan("dev"));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
 app.use(multer().single("file"));
 
 //routes 설정
