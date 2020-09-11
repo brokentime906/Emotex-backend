@@ -7,12 +7,12 @@ const api = require("../api/DL_Model");
 const {
   getCount,
   createEvaluation,
-  getEvaluationByEmailAndURL,
+  getEvaluationByEmail,
 } = require("../controller/evaluation");
 
 //get Count number
 router.post("/", createEvaluation);
 router.get("/cnt", getCount);
-router.get("/email/:email", getEvaluationByEmailAndURL);
+router.get("/email/:email", getEvaluationByEmail);
 
 module.exports = router;

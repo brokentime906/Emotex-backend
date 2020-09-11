@@ -34,6 +34,9 @@
     "passport-youtube-v3": "^2.1.0",
     "server-destroy": "^1.0.1",
     "swagger-jsdoc": "^4.0.0",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "youtube-crawler": "^0.0.3",
+    "youtube-info": "^1.3.2",
+    "youtube-search-without-api-key": "^1.0.2"
   }
 }

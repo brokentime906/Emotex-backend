@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const MovieSchema = new Schema({
   url: { required: true, type: String, unique: true },
   title: { required: false, type: String },
+  thumbnail: { required: false, type: String },
   view: { required: false, type: Number },
   bad: { required: false, type: Number },
   good: { required: false, type: Number },

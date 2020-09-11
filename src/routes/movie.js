@@ -9,9 +9,9 @@ router.get("/", async (req, res, next) => {
 });
 
 // get specific movie's data
-router.get("/:url", async (req, res, next) => {
-  const { url } = req.params;
-  const existsMovie = await Movie.findOne({ url });
+router.get("/:id", async (req, res, next) => {
+  const { id } = req.params;
+  const existsMovie = await Movie.findOne({ _id: id });
   if (existsMovie) {
     res.json({ success: true, movie: existsMovie });
   } else {
@@ -20,9 +20,15 @@ router.get("/:url", async (req, res, next) => {
 });
 
 //crawling movie data and save data
-router.post("/:url", async (req, res, next) => {
-  const { url } = req.params;
-  console.log(url, " 을 크롤링해야해");
-  res.json({ success: false, message: "NOT Developed" });
+router.post("/", async (req, res, next) => {
+  const { url, title, view, good, bad, comments, image } = req.body;
+  console.log(url);
+  try {
+    await Movie.create({ url, title, view, good, bad, comments, image });
+    res.json({ success: true, message: "Save Success" });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ success: false, message: "Error " });
+  }
 });
 module.exports = router;

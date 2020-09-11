@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
+
 data = {
   neutral: 0.004494509,
   Happiness: 0.4531575,
@@ -13,11 +14,13 @@ data = {
   Arousal: 0.020094475,
 };
 const EvaluationSchema = new Schema({
-  movie_url: { required: true, type: String, unique: true },
-  user_email: { required: true, type: String, unique: true },
+  movie_url: { required: true, type: Schema.Types.ObjectId, ref: "Movie" },
+  user_email: { required: true, type: Schema.Types.ObjectId, ref: "User" },
+  age: { required: false, type: Number },
+  gender: { required: false, type: String },
   cnt: { required: false, type: Number },
   time_stamp: { required: false, type: String },
-  image: { required: true, type: String },
+  image: { required: false, type: String },
   Happiness: { required: false, type: Number },
   Sad: { required: false, type: Number },
   Fear: { required: false, type: Number },
