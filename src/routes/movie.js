@@ -1,11 +1,26 @@
 const express = require("express");
 const Movie = require("../schemas/Movie");
 const router = express.Router();
+var getYouTubeID = require("get-youtube-id");
 
+var getYoutubeTitle = require("get-youtube-title");
+const getThumb = require("video-thumbnail-url");
 //get All Movie
 router.get("/", async (req, res, next) => {
   const allMovie = await Movie.find({});
   res.json({ success: true, movies: allMovie });
+});
+router.get("/test", async (req, res, next) => {
+  const url = "https://m.youtube.com/watch?v=Xmp20-Bo85w&pbj";
+  try {
+    const _thumbnail = await getThumb(url);
+    var id = await getYouTubeID(url);
+    console.log(_thumbnail, id);
+  } catch (e) {
+    console.log(e);
+    return res.json({ msg: e });
+  }
+  return res.json({ msg: _thumbnail });
 });
 
 // get specific movie's data
@@ -18,7 +33,6 @@ router.get("/:id", async (req, res, next) => {
     res.json({ success: false, movie: {} });
   }
 });
-
 //crawling movie data and save data
 router.post("/", async (req, res, next) => {
   const { url, title, view, good, bad, comments, image } = req.body;

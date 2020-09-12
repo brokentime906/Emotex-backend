@@ -6,6 +6,10 @@ const FormData = require("form-data");
 const colors = require("colors");
 const Movie = require("../schemas/Movie");
 const User = require("../schemas/User");
+var getYouTubeID = require("get-youtube-id");
+
+var getYoutubeTitle = require("get-youtube-title");
+const getThumb = require("video-thumbnail-url");
 exports.getCount = async (req, res, next) => {
   const { movie_url, user_email } = req.body;
   try {
@@ -24,41 +28,60 @@ exports.getCount = async (req, res, next) => {
 exports.getEvaluationByEmail = async (req, res, next) => {
   const { email } = req.params;
   try {
-    const user = await User.findOne({ email });
-    if (!user) return res.stats(500).json({ msg: "유저없어" });
+    console.log("email", email);
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = await User.create({ email });
+      // return res.stats(500).json({ msg: "유저없어" });
+    }
     const evaluations = await Evaluation.find({
-      user_email: user,
+      user_email: user._id,
     }).select("movie_url");
-    const movie_urls = await Promise.all(
-      evaluations.map((movie) => movie.movie_url)
-    );
+    console.log("works here?".red.bold);
+    let movie_urls = [];
+    if (evaluations && evaluations.length > 0) {
+      movie_urls = await Promise.all(
+        evaluations.map((movie) => movie.movie_url)
+      );
+    } else {
+      return res.json({ success: true, movies: [], evaluationList: [] });
+    }
     // return res.json({
     //   msg: "movie _ urls ",
     //   movie_ids: [...new Set(movie_urls)],
     // }); // ok
     const movies = await Movie.find().where("_id").in(movie_urls).exec();
-    return res.json({ msg: "movies ok ", movies }); // ok
-
-    res.status(200).json({ success: true, data: evaluations });
+    // return res.json({ msg: "movies ok ", movies }); // ok
+    const evaluationList = await Promise.all(
+      movies.map(
+        async (movie) => await Evaluation.find({ movie_url: movie.id })
+      )
+    );
+    res.status(200).json({ success: true, movies, evaluationList });
   } catch (err) {
     res.status(400).json({ success: false, msg: "DB Error" });
   }
 };
 let idx = 1;
-const dev = true;
+const dev = false;
 exports.createEvaluation = async (req, res, next) => {
   console.log(`create Eval starts`.green.bold);
-  let parsedData;
-  let image, url, time, age, gender;
-  if (!dev) {
-    parsedData = JSON.parse(req.body["postData,"]); //dev
+  let parsedData = req.body["postData,"];
+  let image, url, time, age, gender, email;
 
+  if (!dev) {
+    // parsedData = JSON.stringify(req.body["postData,"]);
+
+    parsedData = JSON.parse(parsedData); //dev
     image = parsedData.image.replace("\n", "");
     url = parsedData.url.replace("\n", "");
+    url = url.replace("m.", "");
     time = parsedData.time;
     age = parsedData.age;
     gender = parsedData.gender;
-    console.log("Helo");
+    email = parsedData.email;
+    console.log(email, parsedData.id);
+    console.log("** keys **", Object.keys(JSON.parse(req.body["postData,"])));
     await fs.writeFileSync(__dirname + "image_encoded.txt", image);
 
     const user_email = "test hello";
@@ -84,15 +107,39 @@ exports.createEvaluation = async (req, res, next) => {
       result = await axios.post(khanUrl, data, {
         headers: headerOptions,
       });
+      console.log("Here works 5".red.bold);
+      let movie = await Movie.findOne({ url });
+      if (!movie) {
+        const _thumbnail = await getThumb(url);
+        console.log("url thumn", url, _thumbnail);
+        var id = getYouTubeID(url);
 
-      // const newEvaluation = new Evaluation({
-      //   movie_url: url,
-      //   user_email,
-      //   image: base64Str,
-      //   ...result.data,
-      // });
+        const _title = await new Promise((resolve) =>
+          getYoutubeTitle(id, (err, title) => resolve(title))
+        );
+        console.log(_title);
+        movie = await Movie.create({
+          url,
+          thumbnail: _thumbnail,
+          title: _title,
+        });
+
+        return res.json({ msg: "여기 되냐 ?" });
+      }
+      console.log(result.data);
+      // return res.json({ result. });
+      let user = await User.findOne({ email });
+      if (!user) {
+        user = await User.create({ email });
+      }
+      const newEvaluation = new Evaluation({
+        movie_url: movie.id,
+        user_email: user.id,
+        image: base64Str,
+        ...result.data,
+      });
       // console.log(req.body);
-      // const _result = await newEvaluation.save();
+      const _result = await newEvaluation.save();
       console.log(_result, " 저장함 ");
       // console.log("전송성공", result.data);
       console.log(url, time, age, gender);
