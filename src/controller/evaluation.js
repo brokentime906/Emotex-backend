@@ -24,7 +24,39 @@ exports.getCount = async (req, res, next) => {
     res.status(400).json({ succes: false, msg: "error in db" });
   }
 };
+exports.getEvaluationByMovie = async (req, res, next) => {
+  const { url } = req.body;
+  console.log(url);
+  try {
+    const movie = await Movie.findOne({ url });
+    if (!movie)
+      return res.status(401).json({ success: false, msg: "There is No Movie" });
+    console.log(movie);
+    // await Evaluation.create({ movie_url: movie._id, user_email: user });
 
+    //movies have all evaluations
+    const movies = await Evaluation.find({ movie_url: movie._id });
+
+    //get Unique User Object List
+    const userList = await Promise.all(movies.map((movie) => movie.user_email));
+    console.log(userList);
+    const uniqueUser = [...new Set(userList)];
+
+    //with unique user id get  each Evaluations with email , movie
+    const allEvaluations = await Promise.all(
+      uniqueUser.map((user) =>
+        Evaluation.find({ movie_url: movie._id, user_email: user })
+      )
+    );
+    res.json({ success: true, msg: "Yes", allEvaluations });
+  } catch (err) {
+    return res.status(400).json({ success: false, msg: err });
+  }
+  // const evaluations = await Evaluation.find({
+  //   movie_url: movie._id,
+  //   user_email: movies[0].user_email,
+  // });
+};
 exports.getEvaluationByEmail = async (req, res, next) => {
   const { email } = req.params;
   try {
@@ -124,9 +156,16 @@ exports.createEvaluation = async (req, res, next) => {
           title: _title,
         });
 
-        return res.json({ msg: "여기 되냐 ?" });
+        // return res.json({ msg: "여기 되냐 ?" });
       }
-      console.log(result.data);
+      console.log("khan result".green.bold, result.data);
+      console.log("typeof reuslt".cyan.bold, typeof result.data);
+      const ttt = result.data.replace(/\'/g, '"');
+
+      console.log("resultParsed".red.bold, ttt);
+      const resultParsed = await JSON.parse(ttt);
+      console.log("resultParsed".red.bold, resultParsed);
+
       // return res.json({ result. });
       let user = await User.findOne({ email });
       if (!user) {
@@ -135,8 +174,8 @@ exports.createEvaluation = async (req, res, next) => {
       const newEvaluation = new Evaluation({
         movie_url: movie.id,
         user_email: user.id,
-        image: base64Str,
-        ...result.data,
+        // image: base64Str,
+        ...resultParsed,
       });
       // console.log(req.body);
       const _result = await newEvaluation.save();
@@ -158,6 +197,7 @@ exports.createEvaluation = async (req, res, next) => {
     try {
       const movie = await Movie.findOne({ url });
       if (!movie) {
+        await Movie.create({ url });
         return res.status(500).json({ message: "존재하지 않는 Movie" });
       }
       const user = await User.findOne({ email: user_email });

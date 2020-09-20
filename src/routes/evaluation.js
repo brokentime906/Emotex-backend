@@ -8,11 +8,14 @@ const {
   getCount,
   createEvaluation,
   getEvaluationByEmail,
+  getEvaluationByMovie,
 } = require("../controller/evaluation");
 
 //get Count number
 router.post("/", createEvaluation);
 router.get("/cnt", getCount);
+router.post("/movie", getEvaluationByMovie);
+
 router.get("/email/:email", getEvaluationByEmail);
 
 module.exports = router;

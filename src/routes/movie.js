@@ -22,6 +22,15 @@ router.get("/test", async (req, res, next) => {
   }
   return res.json({ msg: _thumbnail });
 });
+router.post("/url", async (req, res, next) => {
+  const { url } = req.body;
+  const existsMovie = await Movie.findOne({ url });
+  if (existsMovie) {
+    res.json({ success: true, movie: existsMovie });
+  } else {
+    res.json({ success: false, movie: {} });
+  }
+});
 
 // get specific movie's data
 router.get("/:id", async (req, res, next) => {
@@ -33,6 +42,7 @@ router.get("/:id", async (req, res, next) => {
     res.json({ success: false, movie: {} });
   }
 });
+
 //crawling movie data and save data
 router.post("/", async (req, res, next) => {
   const { url, title, view, good, bad, comments, image } = req.body;
